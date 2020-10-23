@@ -17,6 +17,7 @@ import (
 	"github.com/aler9/rtsp-simple-server/sourcertmp"
 	"github.com/aler9/rtsp-simple-server/sourcertsp"
 	"github.com/aler9/rtsp-simple-server/stats"
+	"github.com/aler9/rtsp-simple-server/publisherman"
 )
 
 const (
@@ -573,6 +574,7 @@ func (pa *Path) onClientAnnounce(c *client.Client, tracks gortsplib.Tracks) erro
 func (pa *Path) onClientRecord(c *client.Client) {
 	atomic.AddInt64(pa.stats.CountPublishers, 1)
 	pa.clients[c] = clientStateRecord
+	publisherman.GetInstance().Add(pa.name)
 	pa.onSourceSetReady()
 }
 
@@ -587,6 +589,7 @@ func (pa *Path) onClientRemove(c *client.Client) {
 
 	case clientStateRecord:
 		atomic.AddInt64(pa.stats.CountPublishers, -1)
+		publisherman.GetInstance().Remove(pa.name)
 		pa.onSourceSetNotReady()
 	}
 
