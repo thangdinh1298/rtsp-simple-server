@@ -556,6 +556,7 @@ func (pa *Path) onClientSetupPlay(c *client.Client, trackId int) error {
 func (pa *Path) onClientPlay(c *client.Client) {
 	atomic.AddInt64(pa.stats.CountReaders, 1)
 	pa.clients[c] = clientStatePlay
+	publisherman.GetInstance().IncrementViewerCount(pa.name)
 	pa.readers.add(c)
 }
 
@@ -585,6 +586,7 @@ func (pa *Path) onClientRemove(c *client.Client) {
 	switch state {
 	case clientStatePlay:
 		atomic.AddInt64(pa.stats.CountReaders, -1)
+		publisherman.GetInstance().DeccrementViewerCount(pa.name)
 		pa.readers.remove(c)
 
 	case clientStateRecord:

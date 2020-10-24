@@ -18,6 +18,7 @@ import (
 	"github.com/aler9/rtsp-simple-server/servertcp"
 	"github.com/aler9/rtsp-simple-server/serverudp"
 	"github.com/aler9/rtsp-simple-server/stats"
+	"github.com/aler9/rtsp-simple-server/serverhttp"
 )
 
 var Version = "v0.0.0"
@@ -110,6 +111,8 @@ func newProgram(args []string) (*program, error) {
 		p.closeResources()
 		return nil, err
 	}
+
+	serverhttp.New(p)
 
 	p.pathMan = pathman.New(p.stats, p.serverUdpRtp, p.serverUdpRtcp,
 		p.conf.ReadTimeout, p.conf.WriteTimeout, p.conf.AuthMethodsParsed,
